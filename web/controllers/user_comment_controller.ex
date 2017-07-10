@@ -1,15 +1,21 @@
-defmodule PolymorphicAssociation.PostCommentController do
+defmodule PolymorphicAssociation.UserCommentController do
   use PolymorphicAssociation.Web, :controller
-  alias PolymorphicAssociation.Post
+  alias PolymorphicAssociation.User
+  alias PolymorphicAssociation.Comment
+  alias PolymorphicAssociation.UserView
 
-  def create(conn, %{"comment" => comment_params, "post_id" => post_id}) do
-    post = Repo.get!(Post, post_id)
-    comments = Repo.all(assoc(post, :comments))
-    changeset = Ecto.build_assoc(post, :comments, body: comment_params["body"])
-    Repo.insert(changeset)
+  def create(conn, %{"comment" => comment_params, "user_id" => user_id}) do
+    user = Repo.get!(User, user_id)
+    comments = Repo.all(assoc(user, :comments))
+    changeset = Comment.changeset(%Comment{assoc_id: user.id}, comment_params)
+    if changeset.valid? do
+      Repo.insert(build_assoc(user, :comments, body: comment_params["body"]))
 
-    conn
-    |> put_flash(:info, "Comment created successfully.")
-    |> redirect(to: post_path(conn, :show, post))
+      conn
+      |> put_flash(:info, "Comment created successfully.")
+      |> redirect(to: user_path(conn, :show, user))
+    else
+      render(conn, UserView, :show, user: user, changeset: changeset, comments: comments)
+    end
   end
 end
