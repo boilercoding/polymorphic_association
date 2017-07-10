@@ -1,8 +1,11 @@
 defmodule PolymorphicAssociation.User do
   use PolymorphicAssociation.Web, :model
 
+  alias PolymorphicAssociation.Comment
+
   schema "users" do
     field :name, :string
+    has_many :comments, {"users_comments", Comment}, foreign_key: :assoc_id
 
     timestamps()
   end

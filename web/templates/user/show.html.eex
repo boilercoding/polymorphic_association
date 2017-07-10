@@ -9,5 +9,14 @@
 
 </ul>
 
+<%= render PolymorphicAssociation.UserCommentView, "new.html",
+                                conn: @conn,
+                                user: @user,
+                                changeset: @changeset %>
+
+<%= for comment <- @comments do %>
+  <h3><%= comment.body %></h3>
+<% end %>
+
 <%= link "Edit", to: user_path(@conn, :edit, @user) %>
 <%= link "Back", to: user_path(@conn, :index) %>

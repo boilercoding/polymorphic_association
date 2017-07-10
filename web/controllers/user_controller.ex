@@ -2,6 +2,7 @@ defmodule PolymorphicAssociation.UserController do
   use PolymorphicAssociation.Web, :controller
 
   alias PolymorphicAssociation.User
+  alias PolymorphicAssociation.Comment
 
   def index(conn, _params) do
     users = Repo.all(User)
@@ -27,8 +28,10 @@ defmodule PolymorphicAssociation.UserController do
   end
 
   def show(conn, %{"id" => id}) do
+    changeset = Comment.changeset(%Comment{})
     user = Repo.get!(User, id)
-    render(conn, "show.html", user: user)
+    comments = Repo.all(assoc(user, :comments))
+    render(conn, "show.html", user: user, comments: comments, changeset: changeset)
   end
 
   def edit(conn, %{"id" => id}) do

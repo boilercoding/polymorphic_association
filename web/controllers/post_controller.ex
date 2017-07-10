@@ -2,6 +2,7 @@ defmodule PolymorphicAssociation.PostController do
   use PolymorphicAssociation.Web, :controller
 
   alias PolymorphicAssociation.Post
+  alias PolymorphicAssociation.Comment
 
   def index(conn, _params) do
     posts = Repo.all(Post)
@@ -27,8 +28,10 @@ defmodule PolymorphicAssociation.PostController do
   end
 
   def show(conn, %{"id" => id}) do
+    changeset = Comment.changeset(%Comment{})
     post = Repo.get!(Post, id)
-    render(conn, "show.html", post: post)
+    comments = Repo.all(assoc(post, :comments))
+    render(conn, "show.html", post: post, changeset: changeset, comments: comments)
   end
 
   def edit(conn, %{"id" => id}) do

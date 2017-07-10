@@ -1,0 +1,17 @@
+<%= form_for @changeset, post_post_comment_path(@conn, :create, @post), fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, :Add_a_comment, class: "control-label" %>
+    <%= textarea f, :body, class: "form-control" %>
+    <%= error_tag f, :body %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Publish", class: "btn btn-primary" %>
+  </div>
+<% end %>
